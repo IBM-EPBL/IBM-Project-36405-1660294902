@@ -3,7 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from markupsafe import escape
 
 import ibm_db
-conn = ibm_db.connect("DATABASE=bludb;HOSTNAME=2d46b6b4-cbf6-40eb-bbce-6251e6ba0300.bs2io90l08kqb1od8lcg.databases.appdomain.cloud;PORT=32328;SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID=pmt61122;PWD=rPXDA8yDDQ0rBCm0",'','')
+conn = ibm_db.connect("DATABASE=bludb;HOSTNAME=3883e7e4-18f5-4afe-be8c-fa31c41761d2.bs2io90l08kqb1od8lcg.databases.appdomain.cloud;PORT=31498;SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID=nvc66176;PWD=mJ8bip8lv31naRX3",'','')
+
 app = Flask(__name__)
 
 
@@ -12,20 +13,20 @@ app = Flask(__name__)
 def home():
   return render_template('home.html')
 
-@app.route('/addstudent')
+@app.route('/signup')
 def new_student():
-  return render_template('add_student.html')
+  return render_template('signup.html')
 
 @app.route('/addrec',methods = ['POST', 'GET'])
 def addrec():
   if request.method == 'POST':
 
     name = request.form['name']
-    address = request.form['address']
-    city = request.form['city']
-    pin = request.form['pin']
+    mail = request.form['mail']
+    uname = request.form['uname']
+    password = request.form['poss']
 
-    sql = "SELECT * FROM students WHERE name =?"
+    sql = "SELECT * FROM signup WHERE name =?"
     stmt = ibm_db.prepare(conn, sql)
     ibm_db.bind_param(stmt,1,name)
     ibm_db.execute(stmt)
@@ -34,12 +35,12 @@ def addrec():
     if account:
       return render_template('list.html', msg="You are already a member, please login using your details")
     else:
-      insert_sql = "INSERT INTO students VALUES (?,?,?,?)"
+      insert_sql = "INSERT INTO signup VALUES (?,?,?,?)"
       prep_stmt = ibm_db.prepare(conn, insert_sql)
       ibm_db.bind_param(prep_stmt, 1, name)
-      ibm_db.bind_param(prep_stmt, 2, address)
-      ibm_db.bind_param(prep_stmt, 3, city)
-      ibm_db.bind_param(prep_stmt, 4, pin)
+      ibm_db.bind_param(prep_stmt, 2, mail)
+      ibm_db.bind_param(prep_stmt, 3, uname)
+      ibm_db.bind_param(prep_stmt, 4, password)
       ibm_db.execute(prep_stmt)
     
     return render_template('home.html', msg="Student Data saved successfuly..")
