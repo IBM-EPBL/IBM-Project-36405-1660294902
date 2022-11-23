@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skill-job
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: skill-job
+  template:
+    metadata:
+      labels:
+        app: skill-job
+
+    spec:
+      containers:
+        - name: skill-job
+          image: skill-job/finalphase
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+              protocol: TCP
